@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ava's Graduation Week</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:      #F8F2EA;
+  --cream2:     #F0E6D6;
+  --card:       #FDFAF6;
+  --wine:       #6B2D3E;
+  --terra:      #A65D4A;
+  --gold:       #C4A265;
+  --gold-light: #E2CCA0;
+  --sage:       #7A9E8C;
+  --charcoal:   #2C2420;
+  --text:       #3D2B24;
+  --muted:      #8A6E62;
+  --border:     #E2D0B4;
+  --brooks:     #6B2D3E;
+  --grandma:    #A65D4A;
+  --lolola:     #7A9E8C;
+  --veas:       #B8922A;
+  --njenn:      #7B5EA7;
+  --njosette:   #3D7FA8;
+  --alan:       #4E7A4E;
+  --eve:        #C4727A;
+  --nic:        #D4847A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(248,242,234,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--wine);cursor:pointer}
+.nav-logo span{color:var(--terra)}
+.nav-links{display:flex;gap:4px}
+.nav-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border-radius:100px;border:1px solid transparent;background:none;color:var(--muted);cursor:pointer;transition:all .2s}
+.nav-btn:hover{color:var(--text);border-color:var(--border)}
+.nav-btn.active{background:var(--wine);color:#fff;border-color:var(--wine)}
+
+.page{display:none}
+.page.active{display:block}
+.page-inner{max-width:1300px;margin:0 auto;padding:48px 40px 100px}
+
+.hero{text-align:center;padding:48px 0 40px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(44px,7vw,80px);font-weight:400;color:var(--wine);line-height:1.0}
+.hero h1 em{font-style:italic;color:var(--terra);display:block}
+.hero-sub{font-size:14px;font-weight:300;color:var(--muted);margin-top:14px}
+.hero-rule{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:24px auto 0}
+
+.filter-wrap{margin:0 0 36px;text-align:center}
+.filter-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{display:flex;align-items:center;gap:7px;padding:8px 18px;border-radius:100px;border:1.5px solid var(--border);background:var(--card);font-size:12.5px;font-weight:400;color:var(--muted);cursor:pointer;transition:all .18s;user-select:none}
+.chip:hover{border-color:var(--gold-light);color:var(--text)}
+.chip.active{color:#fff;border-color:transparent}
+.chip[data-g="brooks"].active{background:var(--brooks)}
+.chip[data-g="grandma"].active{background:var(--grandma)}
+.chip[data-g="lolola"].active{background:var(--lolola)}
+.chip[data-g="veas"].active{background:var(--veas)}
+.chip[data-g="njenn"].active{background:var(--njenn)}
+.chip[data-g="njosette"].active{background:var(--njosette)}
+.chip[data-g="alan"].active{background:var(--alan)}
+.chip[data-g="eve"].active{background:var(--eve)}
+.chip[data-g="nic"].active{background:var(--nic)}
+.chip-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0;pointer-events:none}
+
+.cal-outer{overflow-x:auto;padding-bottom:12px;overflow-y:visible}
+.cal-outer::-webkit-scrollbar{height:4px}
+.cal-outer::-webkit-scrollbar-track{background:var(--cream2)}
+.cal-outer::-webkit-scrollbar-thumb{background:var(--gold-light);border-radius:2px}
+.cal-grid{display:flex;gap:12px;align-items:flex-start;min-width:max-content}
+
+.day-col{width:210px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.day-head{background:var(--wine);border-radius:10px 10px 0 0;padding:14px 14px 12px;text-align:center;flex-shrink:0}
+.day-head.is-grad{background:linear-gradient(140deg,var(--wine),var(--terra))}
+.day-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff;line-height:1}
+.day-dow{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:4px}
+
+.ev{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 13px;position:relative;overflow:hidden;cursor:pointer;transition:box-shadow .18s,transform .18s,border-color .18s}
+.ev::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.ev.meal::before{background:var(--terra)}
+.ev.act::before{background:var(--sage)}
+.ev.night::before{background:var(--wine)}
+.ev.special::before{background:var(--gold)}
+.ev.fam::before{background:#C9897A}
+.ev.transportation::before{background:var(--gold)}
+.ev.options-card{background:rgba(240,230,214,.5);cursor:default}
+.ev.options-card::before{background:var(--gold-light)}
+.ev:not(.options-card):not(.ceremony):hover{box-shadow:0 6px 20px rgba(107,45,62,.1);transform:translateY(-2px);border-color:var(--gold-light)}
+.ev-time{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:1px;color:var(--gold);margin-bottom:3px}
+.ev-name{font-size:12.5px;font-weight:500;color:var(--charcoal);line-height:1.35}
+.ev-sub-note{font-size:11px;font-weight:300;font-style:italic;color:var(--muted);margin-top:3px;line-height:1.4}
+.ev-res{display:inline-block;margin-top:6px;font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:rgba(196,162,101,.12);color:var(--terra);border:1px solid rgba(196,162,101,.3)}
+.ev-hint{position:absolute;bottom:8px;right:10px;font-size:10px;color:var(--gold-light);opacity:0;transition:opacity .15s}
+.ev:not(.options-card):not(.ceremony):hover .ev-hint{opacity:1}
+.opts-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.opt-item{font-size:11px;font-weight:300;color:var(--muted);padding:3px 0;display:flex;gap:6px;line-height:1.35}
+.opt-item::before{content:'→';color:var(--gold-light);font-size:10px;flex-shrink:0;margin-top:1px}
+.ev.ceremony{background:linear-gradient(135deg,rgba(107,45,62,.05),rgba(196,162,101,.08));border-color:var(--gold-light);text-align:center;padding:18px 13px;cursor:pointer}
+.ev.ceremony::before{display:none}
+.ev.ceremony:hover{box-shadow:0 6px 20px rgba(107,45,62,.1);transform:translateY(-2px)}
+.ceremony-icon{font-size:20px;margin-bottom:6px}
+.ceremony-title{font-family:'Playfair Display',serif;font-size:14px;font-style:italic;font-weight:600;color:var(--wine)}
+
+.modal-bg{position:fixed;inset:0;background:rgba(44,36,32,.45);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:var(--card);border-radius:16px;width:100%;max-width:460px;max-height:80vh;overflow-y:auto;padding:32px;position:relative;transform:translateY(12px);transition:transform .2s;border:1px solid var(--border)}
+.modal-bg.open .modal{transform:none}
+.modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted);transition:all .15s}
+.modal-close:hover{background:var(--wine);color:#fff;border-color:var(--wine)}
+.modal-type{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.modal-title{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;color:var(--wine);margin-bottom:6px;line-height:1.2;padding-right:32px}
+.modal-day{font-size:12px;font-weight:300;color:var(--muted);margin-bottom:20px}
+.modal-rule{height:1px;background:var(--border);margin-bottom:20px}
+.modal-fields{display:flex;flex-direction:column;gap:16px}
+.mf-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.mf-val{font-size:14px;font-weight:300;color:var(--text);line-height:1.5}
+.mf-val.em{font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--wine)}
+
+.page-title{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:400;color:var(--wine);margin-bottom:8px;line-height:1.1}
+.page-title em{font-style:italic;color:var(--terra)}
+.page-sub{font-size:14px;font-weight:300;color:var(--muted);margin-bottom:40px}
+.page-rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:40px}
+.reminders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.reminder-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start}
+.reminder-date{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--wine);line-height:1;min-width:44px;text-align:center}
+.reminder-date small{display:block;font-family:'DM Mono',monospace;font-size:8px;font-weight:400;letter-spacing:1px;color:var(--gold);margin-top:2px}
+.reminder-body{flex:1}
+.reminder-name{font-size:14px;font-weight:500;color:var(--charcoal);margin-bottom:4px}
+.reminder-detail{font-size:12px;font-weight:300;color:var(--muted);line-height:1.5}
+.section-heading{font-family:'Playfair Display',serif;font-size:22px;font-style:italic;color:var(--wine);margin-bottom:20px}
+
+.recs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.rec-cat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 22px 18px}
+.rec-cat-title{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.rec-cat-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.rec-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 0;border-bottom:1px solid rgba(226,208,180,.4)}
+.rec-row:last-child{border-bottom:none;padding-bottom:0}
+.rec-name{font-size:13px;font-weight:500;color:var(--charcoal)}
+.rec-note{font-size:11px;font-weight:300;color:var(--muted);font-style:italic;text-align:right;white-space:nowrap}
+
+.transport-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.transport-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 24px}
+.transport-icon{font-size:24px;margin-bottom:10px}
+.transport-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--wine);margin-bottom:8px}
+.transport-body{font-size:13px;font-weight:300;color:var(--text);line-height:1.6}
+
+/* PLAN BUILDER */
+.plan-slot{border:2px dashed var(--border);border-radius:8px;padding:10px 13px;margin-top:0}
+.plan-slot-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.plan-items{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.plan-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px 10px}
+.plan-item-name{font-size:11.5px;font-weight:500;color:var(--charcoal)}
+.plan-item-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:0 2px;transition:color .15s}
+.plan-item-remove:hover{color:var(--wine)}
+.plan-add-btn{display:flex;align-items:center;gap:6px;width:100%;background:none;border:1px dashed var(--gold-light);border-radius:6px;padding:7px 10px;cursor:pointer;font-size:11.5px;color:var(--gold);transition:all .15s;font-family:'DM Sans',sans-serif}
+.plan-add-btn:hover{background:rgba(196,162,101,.08);border-color:var(--gold)}
+
+.plan-panel-bg{position:fixed;inset:0;background:rgba(44,36,32,.35);z-index:150;opacity:0;pointer-events:none;transition:opacity .2s}
+.plan-panel-bg.open{opacity:1;pointer-events:all}
+.plan-panel{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:20px 20px 0 0;border-top:1px solid var(--border);z-index:151;max-height:80vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s ease}
+.plan-panel-bg.open .plan-panel{transform:none}
+.plan-panel-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.plan-panel-title{font-family:'Playfair Display',serif;font-size:18px;font-style:italic;color:var(--wine);margin-bottom:2px}
+.plan-panel-sub{font-size:12px;font-weight:300;color:var(--muted)}
+.plan-panel-close{position:absolute;top:18px;right:20px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted);transition:all .15s}
+.plan-panel-close:hover{background:var(--wine);color:#fff}
+.plan-panel-body{overflow-y:auto;padding:16px 24px 32px;flex:1}
+
+.plan-custom{display:flex;gap:8px;margin-bottom:20px}
+.plan-custom input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);outline:none;transition:border-color .15s}
+.plan-custom input:focus{border-color:var(--gold)}
+.plan-custom input::placeholder{color:var(--muted)}
+.plan-custom-btn{background:var(--wine);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.plan-custom-btn:hover{background:var(--terra)}
+
+.plan-cat-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin:16px 0 8px}
+.plan-rec-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.plan-rec-chip{padding:5px 12px;border-radius:100px;border:1.5px solid var(--border);background:var(--card);font-size:11.5px;color:var(--text);cursor:pointer;transition:all .15s;user-select:none}
+.plan-rec-chip:hover{border-color:var(--gold);background:rgba(196,162,101,.08)}
+.plan-rec-chip.added{background:var(--sage);border-color:var(--sage);color:#fff}
+
+@media(max-width:640px){
+  .page-inner{padding:32px 20px 80px}
+  nav{padding:0 16px}
+  .nav-logo{font-size:15px}
+  .nav-btn{padding:6px 10px;font-size:8px;letter-spacing:1px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('cal')">Ava's <span>Graduation</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" data-page="cal"    onclick="showPage('cal')">Calendar</button>
+    <button class="nav-btn"        data-page="remind" onclick="showPage('remind')">Important Info</button>
+    <button class="nav-btn"        data-page="recs"   onclick="showPage('recs')">Recommendations</button>
+  </div>
+</nav>
+
+<div class="page active" id="page-cal">
+<div class="page-inner">
+  <div class="hero">
+    <div class="eyebrow">✦  New York City  ·  May 2026  ✦</div>
+    <h1>Graduation<em>Week</em></h1>
+    <p class="hero-sub">Select your name to see your schedule</p>
+    <div class="hero-rule"></div>
+  </div>
+  <div id="weather-wrap" style="margin:0 0 32px;text-align:center">
+    <div id="weather-now" style="display:inline-flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:100px;padding:10px 22px;font-size:13px;color:var(--text)">
+      <span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Today</span>
+      <span id="w-icon" style="font-size:22px">⏳</span>
+      <span id="w-temp" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--wine)">--</span>
+      <span id="w-desc" style="color:var(--muted);font-weight:300">Loading NYC weather...</span>
+    </div>
+  </div>
+  <div class="filter-wrap">
+    <div class="filter-label">I am —</div>
+    <div class="chips">
+      <div class="chip" data-g="brooks"   onclick="selectGuest('brooks',this)"><div class="chip-pip" style="background:var(--brooks)"></div>Brooks Family</div>
+      <div class="chip" data-g="grandma"  onclick="selectGuest('grandma',this)"><div class="chip-pip" style="background:var(--grandma)"></div>Grandma</div>
+      <div class="chip" data-g="lolola"   onclick="selectGuest('lolola',this)"><div class="chip-pip" style="background:var(--lolola)"></div>Lolo & Lola</div>
+      <div class="chip" data-g="veas"     onclick="selectGuest('veas',this)"><div class="chip-pip" style="background:var(--veas)"></div>The Veas</div>
+      <div class="chip" data-g="njenn"    onclick="selectGuest('njenn',this)"><div class="chip-pip" style="background:var(--njenn)"></div>Ninang Jenn & Kamea</div>
+      <div class="chip" data-g="njosette" onclick="selectGuest('njosette',this)"><div class="chip-pip" style="background:var(--njosette)"></div>Ninang Josette & Nate</div>
+      <div class="chip" data-g="alan"     onclick="selectGuest('alan',this)"><div class="chip-pip" style="background:var(--alan)"></div>Uncle Alan</div>
+      <div class="chip" data-g="eve"      onclick="selectGuest('eve',this)"><div class="chip-pip" style="background:var(--eve)"></div>Eve</div>
+      <div class="chip" data-g="nic"      onclick="selectGuest('nic',this)"><div class="chip-pip" style="background:var(--nic)"></div>Nic</div>
+    </div>
+  </div>
+  <div class="cal-outer"><div class="cal-grid" id="cal-grid"></div></div>
+</div>
+</div>
+
+<div class="page" id="page-remind">
+<div class="page-inner">
+  <div class="page-title">Important <em>Information</em></div>
+  <p class="page-sub">Everything you need to know for graduation week</p>
+  <div class="page-rule"></div>
+  <div class="section-heading" style="margin-bottom:20px">🌤️ NYC Weather — May 11–18</div>
+  <div id="weather-strip-remind" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:48px">
+    <div style="color:var(--muted);font-size:13px;font-weight:300;padding:12px 0">Loading forecast...</div>
+  </div>
+  <div class="section-heading" style="margin-bottom:20px">🎓 Graduation Day — Saturday, May 16</div>
+  <div class="reminders-grid" style="margin-bottom:48px">
+    <div class="reminder-card" style="border-left:3px solid var(--gold)">
+      <div class="reminder-date" style="font-size:14px;min-width:auto">10:00<small>AM</small></div>
+      <div class="reminder-body">
+        <div class="reminder-name">Commencement Ceremony</div>
+        <div class="reminder-detail">Fordham University Rose Hill Campus. Group transportation from the Thompson Hotel departs at <strong>8:30am</strong>. Group transportation from Rose Hill Campus departs at <strong>2:30pm</strong>. If making your own way, please plan accordingly.</div>
+      </div>
+    </div>
+    <div class="reminder-card" style="border-left:3px solid var(--gold)">
+      <div class="reminder-date" style="font-size:14px;min-width:auto">12:30<small>PM est.</small></div>
+      <div class="reminder-body">
+        <div class="reminder-name">Fordham College at Lincoln Center — Diploma Ceremony</div>
+        <div class="reminder-detail">Immediately following commencement. Time is an estimate — begins right after the main ceremony ends.</div>
+      </div>
+    </div>
+    <div class="reminder-card" style="border-left:3px solid var(--terra)">
+      <div class="reminder-date" style="font-size:14px;min-width:auto">6:30<small>PM</small></div>
+      <div class="reminder-body">
+        <div class="reminder-name">Graduation Dinner @ CUT</div>
+        <div class="reminder-detail">Group transportation from the Thompson Hotel departs at <strong>6:00pm</strong>.</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-heading" style="margin-bottom:20px">🏨 Hotel Tips & Nearby</div>
+  <div class="transport-grid" style="margin-bottom:48px">
+    <div class="transport-card">
+      <div class="transport-icon">🍔</div>
+      <div class="transport-title">Burger Joint</div>
+      <div class="transport-body">A NYC burger restaurant hidden inside the hotel. Look for the curtain off the lobby behind the elevators. Graffiti walls, no-frills burgers, and one of the best patties in the city. Walk-ins only, no reservations, casual.<br><br><strong>Hours:</strong> Sun–Thu 11am–11:30pm · Fri–Sat 11am–midnight</div>
+    </div>
+    <div class="transport-card">
+      <div class="transport-icon">🛎️</div>
+      <div class="transport-title">Room Service</div>
+      <div class="transport-body">Thompson Central Park offers 24-hour in-room dining — order from the comfort of your room any time of day or night.</div>
+    </div>
+    <div class="transport-card">
+      <div class="transport-icon">🛒</div>
+      <div class="transport-title">Morton Williams</div>
+      <div class="transport-body">Full-service supermarket just a few doors down from the hotel if you exit to 57th st through Parker's. Great for snacks, drinks, deli, prepared foods, and anything you forgot to pack. Two-floor supermarket — ground floor has the deli, salad bar, prepared foods and bakery; upstairs has seating.<br><br><strong>Address:</strong> 140 W 57th St<br><strong>Hours:</strong> Open 24 hours</div>
+    </div>
+    <div class="transport-card">
+      <div class="transport-icon">💊</div>
+      <div class="transport-title">Duane Reade</div>
+      <div class="transport-body">Pharmacy and convenience store just steps from the hotel — great for medicine, toiletries, snacks, or anything you need on the go.<br><br><strong>Address:</strong> 100 W 57th St<br><strong>Hours:</strong> Daily 7am–midnight</div>
+    </div>
+    <div class="transport-card">
+      <div class="transport-icon">🌿</div>
+      <div class="transport-title">Whole Foods Market</div>
+      <div class="transport-body">The massive Whole Foods at Columbus Circle is about a 10 min walk from the hotel — great for a full grocery run, hot bar, salad bar, and prepared foods. Located in the lower level of the shops.<br><br><strong>Address:</strong> 10 Columbus Circle<br><strong>Hours:</strong> Daily 7am–10pm</div>
+    </div>
+    <div class="transport-card">
+      <div class="transport-icon">🎯</div>
+      <div class="transport-title">Target</div>
+      <div class="transport-body">The nearest Target is on the Upper West Side — great for any other essentials. Although, worth noting it is not as large as any California Target.<br><br><strong>Address:</strong> 1863 Broadway (at 61st St)<br><strong>Hours:</strong> Daily 8am–11pm · ~15 min walk from hotel</div>
+    </div>
+    <div class="transport-card">
+      <div class="transport-icon">💉</div>
+      <div class="transport-title">CVS Pharmacy</div>
+      <div class="transport-body">The nearest CVS is right by Columbus Circle, has a larger selection than the nearby Duane Reade.<br><br><strong>Address:</strong> 1775 Broadway (near Columbus Circle)<br><strong>Hours:</strong> Open 24 hours</div>
+    </div>
+  </div>
+  <div class="section-heading" style="margin-bottom:20px">🚇 Getting Around NYC</div>
+  <div class="transport-grid">
+    <div class="transport-card"><div class="transport-icon">🚇</div><div class="transport-title">Subway</div><div class="transport-body">$3.00 per ride, each way. Accepts Apple Pay, Google Pay, and contactless credit/debit cards — just tap at the turnstile using OMNY. Runs 24/7.</div></div>
+    <div class="transport-card"><div class="transport-icon">🚕</div><div class="transport-title">Uber / Lyft / Taxi</div><div class="transport-body">Rideshare apps work great across the city. Yellow cabs can be hailed on the street or booked via the Curb app.</div></div>
+    <div class="transport-card"><div class="transport-icon">🚶</div><div class="transport-title">Walking</div><div class="transport-body">NYC is very walkable. Many of our plans are within walking distance of each other.</div></div>
+    <div class="transport-card"><div class="transport-icon">🚌</div><div class="transport-title">Bus</div><div class="transport-body">Also $3.00 per ride with tap to pay via OMNY. Good for crosstown trips where the subway doesn't run directly.</div></div>
+    <div class="transport-card"><div class="transport-icon">🏟️</div><div class="transport-title">Citi Field (5/15 game)</div><div class="transport-body">Take the 7 train from Times Square / Hudson Yards. About 45–50 min total. $3 each way. Game starts at 7:15pm.</div></div>
+    <div class="transport-card"><div class="transport-icon">🎓</div><div class="transport-title">Graduation Day Transport</div><div class="transport-body">Group transport to Rose Hill: departs hotel at <strong>8:30am</strong>. Return from Rose Hill: departs at <strong>2:30pm</strong>. Group transport to CUT dinner: departs hotel at <strong>6:00pm</strong>.</div></div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-recs">
+<div class="page-inner">
+  <div class="page-title">NYC <em>Recommendations</em></div>
+  <p class="page-sub">Ava's picks — for downtime, exploring, and everything in between</p>
+  <div class="page-rule"></div>
+  <div class="recs-grid" id="recs-grid"></div>
+</div>
+</div>
+
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-type" id="m-type"></div>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-day" id="m-day"></div>
+    <div class="modal-rule"></div>
+    <div class="modal-fields" id="m-fields"></div>
+  </div>
+</div>
+
+<div class="plan-panel-bg" id="plan-panel-bg" onclick="if(event.target===this)closePlanPanel()">
+  <div class="plan-panel">
+    <div class="plan-panel-header">
+      <div class="plan-panel-title" id="plan-panel-title">Add to your free time</div>
+      <div class="plan-panel-sub" id="plan-panel-sub"></div>
+      <button class="plan-panel-close" onclick="closePlanPanel()">✕</button>
+    </div>
+    <div class="plan-panel-body">
+      <div class="plan-custom">
+        <input type="text" id="plan-custom-input" placeholder="Type a custom idea..." />
+        <button class="plan-custom-btn" onclick="addCustomPlan()">Add</button>
+      </div>
+      <div id="plan-rec-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var GUESTS = {
+  brooks:   { label:'Brooks Family',         color:'#6B2D3E', days:['511','512','513','514','515','516','517','518'] },
+  grandma:  { label:'Grandma',               color:'#A65D4A', days:['514','515','516','517','518'] },
+  lolola:   { label:'Lolo & Lola',           color:'#7A9E8C', days:['514','515','516','517','518'] },
+  veas:     { label:'The Veas',              color:'#B8922A', days:['514','515','516','517','518'] },
+  njenn:    { label:'Ninang Jenn & Kamea',   color:'#7B5EA7', days:['514','515','516','517','518'] },
+  njosette: { label:'Ninang Josette & Nate', color:'#3D7FA8', days:['515','516','517'] },
+  alan:     { label:'Uncle Alan',            color:'#4E7A4E', days:['514','515','516','517','518'] },
+  eve:      { label:'Eve',                   color:'#C4727A', days:['512','513','514','515','516','517'] },
+  nic:      { label:'Nic',                   color:'#D4847A', days:['516'] }
+};
+
+var PLANNERS = ['brooks','veas','njenn','njosette','alan','eve'];
+
+var DAYS = [
+  { id:'511', date:'5/11', dow:'Monday',    grad:false },
+  { id:'512', date:'5/12', dow:'Tuesday',   grad:false },
+  { id:'513', date:'5/13', dow:'Wednesday', grad:false },
+  { id:'514', date:'5/14', dow:'Thursday',  grad:false },
+  { id:'515', date:'5/15', dow:'Friday',    grad:false },
+  { id:'516', date:'5/16', dow:'Saturday',  grad:true  },
+  { id:'517', date:'5/17', dow:'Sunday',    grad:false },
+  { id:'518', date:'5/18', dow:'Monday',    grad:false }
+];
+
+var EVENTS = {
+  '511':[
+    { type:'fam',  name:'Brooks Family arrives ~7pm', guests:['brooks'] },
+    { type:'act',  name:'Check in to Resorts World',  guests:['brooks'] }
+  ],
+  '512':[
+    { type:'act',  name:'Check in to Park Hyatt Hotel', guests:['brooks'], modal:{ location:'Park Hyatt New York, Midtown' }},
+    { type:'meal', name:'Apollo Bagels', guests:['brooks'], modal:{ dresscode:'Casual', location:'West Village' }},
+    { type:'meal', name:'Coffee @ Rhythm Zero', guests:['brooks'], modal:{ dresscode:'Casual', location:'West Village', notes:'5 min walk from Apollo Bagels' }},
+    { type:'act',  name:'West Village Walk', guests:['brooks'], modal:{ dresscode:'Casual', location:'West Village', notes:'Lelabar \u00b7 The C Cafe \u00b7 L\u0027Industrie Pizza \u00b7 Hudson St. About 1.5 hours.' }},
+    { type:'act',  name:'Walk to Washington Square Park', guests:['brooks'], modal:{ dresscode:'Casual', location:'Greenwich Village' }},
+    { type:'act',  name:'Back to hotel', guests:['brooks'] },
+    { type:'meal', name:'Drinks @ Ripple Room', sub:'~5:30pm', guests:['brooks','eve'], modal:{ dresscode:'Casual', location:'LES', fromHotel:'25 min subway \u00b7 ~30 min Uber' }},
+    { type:'meal', name:'Dinner @ Lil\u0027 Frankies', sub:'7:00pm', guests:['brooks','eve'], modal:{ dresscode:'Casual', location:'East Village', notes:'11 min walk from Ripple Room' }},
+    { type:'night', name:'Nightcap @ Jac\u0027s on Bond', guests:['brooks','eve'], modal:{ dresscode:'Casual', location:'NoHo', notes:'8 min walk from Lil\u0027 Frankies' }}
+  ],
+  '513':[
+    { type:'meal', name:'Hotel Breakfast @ Parker\u0027s', sub:'6:30\u201311am', guests:['brooks'], modal:{ location:'Parker\u0027s, hotel lobby', notes:'Choose your own time \u2014 open 6:30\u201311am.' }},
+    { type:'special', name:'Brooklyn Sports & Entertainment Tour', guests:['brooks'], modal:{ dresscode:'Casual', location:'Brooklyn', fromHotel:'46 min on the train' }},
+    { type:'act',  name:'Stop by Barclays Center', guests:['brooks'], modal:{ dresscode:'Casual', location:'Brooklyn', notes:'20 min from BSE' }},
+    { type:'act',  name:'New York Transit Museum', guests:['brooks'], modal:{ dresscode:'Casual', location:'Brooklyn Heights', notes:'12 min subway \u00b7 21 min walk from Barclays. Optional if time allows.' }},
+    { type:'meal', name:'Other Half Brewing', sub:'Large Brooklyn location', guests:['brooks'], modal:{ dresscode:'Casual', location:'Brooklyn', notes:'21 min from Barclays \u00b7 15 min from Transit Museum' }},
+    { type:'meal', name:'Late Lunch @ Cocodaq', sub:'2:00pm', guests:['brooks'], modal:{ dresscode:'Casual', location:'Union Square', notes:'~30 min from Brooklyn. Korean fried chicken from the same team behind COTE.' }},
+    { type:'act',  name:'Back to hotel', guests:['brooks'] },
+    { type:'meal', name:'Drinks @ Galerie Bar', sub:'7:30pm', guests:['brooks','eve'], modal:{ dresscode:'Business casual', location:'Tribeca', notes:'~25 min from hotel on train \u00b7 23 min drive' }},
+    { type:'meal', name:'Dinner @ Huso', sub:'8:30pm', guests:['brooks','eve'], modal:{ dresscode:'Business casual', location:'Tribeca', notes:'5 min walk from Galerie Bar' }}
+  ],
+  '514':[
+    { type:'meal', name:'Hotel Breakfast @ Parker\u0027s', sub:'6:30\u201311am', guests:['brooks'], modal:{ location:'Parker\u0027s, hotel lobby', notes:'Choose your own time — open 6:30\u201311am.' }},
+    { type:'fam',  name:'Ninang Jenn & Kamea arrive', guests:['njenn'] },
+    { type:'act',  name:'The Met Cloisters', guests:['brooks'], modal:{ dresscode:'Casual', location:'Inwood / Fort Tryon Park', fromHotel:'40 min subway' }},
+    { type:'act',  name:'Back to hotel', guests:['brooks'] },
+    { type:'act',  name:'Free time', sub:'Check the Recommendations page!', guests:['brooks'], planSlot:'514-free' },
+    { type:'meal', name:'Louis Vuitton Cafe', sub:'2:45pm', guests:['njenn','brooks'], modal:{ location:'5th Ave, Midtown', fromHotel:'10 min walk' }},
+    { type:'meal', name:'Biblioth\u00e8que', guests:['njenn','brooks'], modal:{ dresscode:'Casual', location:'SoHo', notes:'Drinks & snacks. 25 min train from Louis Vuitton Cafe.' }},
+    { type:'fam',  name:'\u2736 Everyone arrives to NYC', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'] },
+    { type:'meal', name:'Catered pizza at hotel', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ notes:'Pizza will be at the hotel. Room number TBD.' }}
+  ],
+  '515':[
+    { type:'meal', name:'Hotel Breakfast @ Parker\u0027s', sub:'6:30\u201311am', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ location:'Parker\u0027s, hotel lobby', notes:'Choose your own time — open 6:30\u201311am.' }},
+    { type:'act',  name:'Pilates class \u2014 Tita Jenny', guests:['veas'], modal:{ location:'TBD', fromHotel:'TBD' }},
+    { type:'act',  name:'Free time', sub:'Check the Recommendations page!', guests:['brooks','veas','njenn','njosette','alan'], planSlot:'515-morning' },
+    { type:'act',  name:'Tour of Fordham University LC', guests:['brooks','grandma','lolola','alan','eve'], planSlot:'515-morning' },
+    { type:'meal', name:'Lunch @ Parm', sub:'12:30pm', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ dresscode:'Casual', location:'Upper West Side', fromHotel:'11 min Uber \u00b7 18 min subway \u00b7 ~20 min walk' }},
+    { type:'act',  name:'Walk through / Tour of Central Park', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'] },
+    { type:'act',  name:'Apartment Tour', guests:['veas','njenn','njosette'], modal:{ notes:'Those attending the baseball game are welcome to tour Ava\u0027s apartment following the Central Park walk.' }},
+    { type:'act',  name:'Rest time', guests:['brooks','grandma','lolola','alan','eve'], planSlot:'515-afternoon' },
+    { type:'meal', name:'Optional Rooftop Drinks @ Empire Rooftop', sub:'5:00pm', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ dresscode:'Casual', location:'Columbus Circle', fromHotel:'8 min drive \u00b7 15 min walk' }},
+    { type:'act',  name:'Apartment Tour', guests:['brooks','grandma','lolola','alan','eve'], modal:{ notes:'Following drinks there will be an apartment tour.' }},
+    { type:'act',  name:'Group 1 departs for baseball game', guests:['veas','njenn','njosette'], modal:{ dresscode:'Casual', location:'Citi Field, Queens', fromHotel:'45\u201350 min \u2014 take the 7 train from Times Square', notes:'Yankees vs. Mets \u00b7 7:15pm first pitch.' }},
+    { type:'meal', name:'Dinner @ Showa Era', sub:'6:30pm', guests:['lolola','brooks','alan','eve','grandma'], modal:{ dresscode:'Casual', location:'Hell\u0027s Kitchen', notes:'6:30pm reservation' }}
+  ],
+  '516':[
+    { type:'meal', name:'Hotel Breakfast @ Parker\u0027s', sub:'6:30\u201311am', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ location:'Parker\u0027s, hotel lobby', notes:'Choose your own time — open 6:30\u201311am.' }},
+    { type:'transportation', name:'Group Transportation to Rose Hill', sub:'8:20am', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ notes:'Please be ready by 8:20am. Transportation departs promptly at 8:30am.' }},
+    { type:'ceremony', name:'Graduation Ceremony', sub:'10:00am', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve','nic'], modal:{ dresscode:'Business Casual', location:'Fordham University \u2014 Rose Hill Campus', notes:'Group transport departs hotel at 8:30am. Return transport departs Rose Hill at 2:30pm.' }},
+    { type:'transportation', name:'Group Transportation from Rose Hill', sub:'2:30pm', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ notes:'Please be at the Walsh Gate by 2:20pm. Transportation departs at 2:30pm.' }},
+    { type:'act',  name:'Back to hotel + get ready', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'] },
+    { type:'transportation', name:'Group Transportation to CUT', sub:'5:50pm', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve','nic'], modal:{ notes:'Please be ready in the hotel lobby by 5:50pm. Transportation departs promptly at 6:00pm.' }},
+    { type:'meal', name:'Graduation Dinner @ CUT', sub:'6:30pm', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve','nic'], modal:{ dresscode:'Dressy attire', location:'CUT by Wolfgang Puck', notes:'Group transport departs hotel at 6:00pm.' }},
+    { type:'night', name:'Drinks @ Tigre', sub:'10:00pm', guests:['njenn','brooks','eve','nic'], modal:{ dresscode:'Dressy attire', location:'Midtown', notes:'Following graduation dinner. Kamea, Ava, Eve, and Nic.' }}
+  ],
+  '517':[
+    { type:'meal', name:'Hotel Breakfast @ Parker\u0027s', sub:'6:30\u201311am', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ location:'Parker\u0027s, hotel lobby', notes:'Choose your own time — open 6:30\u201311am.' }},
+    { type:'transportation', name:'Group Transportation to Pier 40', sub:'11:20am', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ notes:'Please be ready in the hotel lobby by 11:20am. Transportation departs promptly at 11:30am.' }},
+    { type:'meal', name:'Brunch Cruise', sub:'12:00pm boarding', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ dresscode:'Smart Casual', notes:'Board at 12:00pm.' }},
+    { type:'act',  name:'Free afternoon', sub:'Check the Recommendations page!', guests:['veas','njenn','njosette','alan'], planSlot:'517-afternoon' },
+    { type:'act',  name:'Activity TBD', guests:['eve'], planSlot:'517-afternoon' },
+    { type:'act',  name:'One World Trade', guests:['brooks','lolola','grandma'], modal:{ dresscode:'Casual', location:'Lower Manhattan', notes:'Dad attending. Ava + Mom: TBD activity.' }},
+    { type:'meal', name:'Optional Group Dinner', guests:['brooks','grandma','lolola','veas','njenn','njosette','alan','eve'], modal:{ dresscode:'Casual', location:'SoHo', notes:'Please confirm attendance. Current reservation for 10.' }},
+    { type:'fam',  name:'Ninang Josette & Nate depart \uD83C\uDF19', guests:['njosette'] }
+  ],
+  '518':[
+    { type:'meal', name:'Breakfast @ Bubby\u0027s', sub:'10:00am', guests:['brooks'], modal:{ dresscode:'Casual', location:'Tribeca', fromHotel:'25 min train from hotel' }},
+    { type:'fam',  name:'Fly home! \uD83C\uDF19', guests:['grandma','lolola','veas','njenn','alan'] },
+    { type:'fam',  name:'Brooks Family departs \uD83C\uDF19', guests:['brooks'] }
+  ]
+};
+
+var RECS = [
+  { cat:'Coffee', items:[
+    { name:'Birch Coffee', loc:'Multiple locations', dist:'' },
+    { name:'Blue Bottle Coffee', loc:'Multiple locations', dist:'' },
+    { name:'The Soiree', loc:'Hell\u0027s Kitchen', dist:'5 min walk from hotel' },
+    { name:'Rhythm Zero', loc:'Multiple locations', dist:'' },
+    { name:'Ground Central Coffee Co.', loc:'Multiple locations', dist:'' },
+    { name:'Brooklyn Roasting Co.', loc:'Multiple locations', dist:'' }
+  ]},
+  { cat:'Bagels', items:[
+    { name:'Apollo Bagels', loc:'Multiple locations', dist:'' },
+    { name:'Popup Bagels', loc:'Multiple locations', dist:'' },
+    { name:'Broad Nosh Bagels', loc:'Multiple locations', dist:'' },
+    { name:'Tompkins Square Bagels', loc:'Multiple locations', dist:'' }
+  ]},
+  { cat:'Pizza', items:[
+    { name:'Johnny\u0027s Pizza', loc:'Lower East Side', dist:'~25 min subway' },
+    { name:'Pop\u0027s Pizza', loc:'Multiple locations', dist:'' },
+    { name:'Joe\u0027s Pizza', loc:'Multiple locations', dist:'' },
+    { name:'L\u0027Industrie', loc:'Multiple locations', dist:'' }
+  ]},
+  { cat:'Shopping', items:[
+    { name:'MLB Store', loc:'Midtown', dist:'10 min walk from hotel' },
+    { name:'NBA Store', loc:'Midtown', dist:'10 min walk from hotel' },
+    { name:'Stussy', loc:'SoHo', dist:'~20 min subway' }
+  ]},
+  { cat:'Drinks \u2014 Casual', items:[
+    { name:'Central Park Tavern', loc:'Near Columbus Circle', dist:'5 min walk from hotel' },
+    { name:'Red Stache', loc:'Hell\u0027s Kitchen', dist:'8 min walk from hotel' },
+    { name:'Empire Rooftop', loc:'Near Columbus Circle', dist:'8 min drive \u00b7 15 min walk' },
+    { name:'All & Sundry', loc:'Near Columbus Circle', dist:'5 min walk from hotel' },
+    { name:'Bar Pisellino', loc:'West Village', dist:'~20 min subway' },
+    { name:'Lelabar', loc:'West Village', dist:'~20 min subway' }
+  ]},
+  { cat:'Drinks \u2014 Upscale', items:[
+    { name:'Biblioth\u00e8que', loc:'SoHo', dist:'~20 min cab' },
+    { name:'Bar Bonobo', loc:'Chelsea', dist:'~15 min cab' },
+    { name:'Jac\u0027s on Bond', loc:'NoHo', dist:'~20 min subway' },
+    { name:'Armada', loc:'LES', dist:'~25 min subway' },
+    { name:'Pearlbox', loc:'SoHo', dist:'~20 min cab' }
+  ]},
+  { cat:'Activities & Museums', items:[
+    { name:'MoMA', loc:'Midtown', dist:'10 min walk from hotel' },
+    { name:'The Met', loc:'Upper East Side', dist:'20 min subway' },
+    { name:'Museum of Natural History', loc:'Upper West Side', dist:'15 min subway' },
+    { name:'9/11 Memorial & Museum', loc:'Lower Manhattan', dist:'30 min subway' },
+    { name:'New York Public Library', loc:'Midtown', dist:'10 min walk from hotel' },
+    { name:'Top of the Rock', loc:'Rockefeller Center', dist:'10 min walk from hotel' },
+    { name:'Empire State Building', loc:'Midtown', dist:'15 min walk from hotel' }
+  ]},
+  { cat:'Parks & Outdoors', items:[
+    { name:'Central Park', loc:'Walk the loop or Bethesda Fountain', dist:'10 min walk from hotel' },
+    { name:'Washington Square Park', loc:'Greenwich Village', dist:'~20 min subway' },
+    { name:'Bryant Park', loc:'Midtown', dist:'10 min walk from hotel' },
+    { name:'The High Line', loc:'Chelsea', dist:'~15 min cab' },
+    { name:'Riverside Park', loc:'Upper West Side', dist:'15 min subway' },
+    { name:'Pier 57', loc:'Chelsea', dist:'~15 min cab' }
+  ]},
+  { cat:'Areas to Explore', items:[
+    { name:'West Village', loc:'Charming & walkable', dist:'~20 min subway' },
+    { name:'SoHo', loc:'Shopping, cobblestones, galleries', dist:'~20 min cab' },
+    { name:'Chinatown', loc:'Food, markets, Canal St', dist:'~25 min subway' },
+    { name:'Koreatown (K-Town)', loc:'32nd St \u00b7 food & nightlife', dist:'10 min walk from hotel' },
+    { name:'Brooklyn Heights', loc:'Promenade views of Manhattan', dist:'~35 min subway' },
+    { name:'DUMBO', loc:'Brooklyn \u00b7 waterfront & bridge views', dist:'~40 min subway' },
+    { name:'Hell\u0027s Kitchen', loc:'Great restaurant strip', dist:'10 min walk from hotel' }
+  ]}
+];
+
+// ── SUPABASE ─────────────────────────────────────────────────────
+var SUPABASE_URL = 'https://wspvevnfzrwjdggpnqfi.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzcHZldm5menJ3amRnZ3BucWZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNDI4MDgsImV4cCI6MjA5MjgxODgwOH0.d9rEQSNOoJC59SD2SwPQFJThPZreT4h0iTUz69Vz1YY';
+
+function sbHeaders() {
+  return { 'Content-Type':'application/json', 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY };
+}
+function planId(guest, slot) { return guest+'_'+slot; }
+var planCache = {};
+function getPlans(guest, slot) { return planCache[planId(guest,slot)] || []; }
+function savePlans(guest, slot, plans) {
+  planCache[planId(guest,slot)] = plans;
+  fetch(SUPABASE_URL+'/rest/v1/plans', {
+    method:'POST',
+    headers:Object.assign({},sbHeaders(),{'Prefer':'resolution=merge-duplicates'}),
+    body:JSON.stringify({id:planId(guest,slot),guest:guest,slot:slot,data:plans,updated_at:new Date().toISOString()})
+  }).catch(function(e){console.warn('Sync failed:',e);});
+}
+function loadAllPlans(guest, callback) {
+  fetch(SUPABASE_URL+'/rest/v1/plans?guest=eq.'+guest, {headers:sbHeaders()})
+  .then(function(r){return r.json();})
+  .then(function(rows){
+    if (!Array.isArray(rows)) return;
+    rows.forEach(function(row){ planCache[row.id]=row.data||[]; });
+    if (callback) callback();
+  })
+  .catch(function(e){console.warn('Load failed:',e);if(callback)callback();});
+}
+
+// ── PLAN PANEL ───────────────────────────────────────────────────
+var currentGuest = 'all';
+var currentPlanSlot = null;
+
+function openPlanPanel(guest, slot, dayLabel) {
+  currentPlanSlot = slot;
+  document.getElementById('plan-panel-title').textContent = 'Add to your free time';
+  document.getElementById('plan-panel-sub').textContent = dayLabel;
+  document.getElementById('plan-custom-input').value = '';
+  renderRecPicker(guest, slot);
+  document.getElementById('plan-panel-bg').classList.add('open');
+}
+function closePlanPanel() {
+  document.getElementById('plan-panel-bg').classList.remove('open');
+  loadAllPlans(currentGuest, function(){ buildCalendar(currentGuest); });
+}
+function renderRecPicker(guest, slot) {
+  var plans = getPlans(guest, slot);
+  var addedNames = plans.map(function(p){ return p.name; });
+  var html = '';
+  for (var i = 0; i < RECS.length; i++) {
+    var cat = RECS[i];
+    html += '<div class="plan-cat-title">'+cat.cat+'</div><div class="plan-rec-chips">';
+    for (var j = 0; j < cat.items.length; j++) {
+      var item = cat.items[j];
+      var isAdded = addedNames.indexOf(item.name) !== -1;
+      html += '<div class="plan-rec-chip'+(isAdded?' added':'')+'" onclick="toggleRecPlan(\''+guest+'\',\''+slot+'\','+i+','+j+',this)">'+
+        item.name+(item.loc?'<span style="opacity:.6;font-size:10px;display:block;margin-top:1px">'+item.loc+'</span>':'')+
+        '</div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('plan-rec-list').innerHTML = html;
+}
+function toggleRecPlan(guest, slot, catIdx, itemIdx, el) {
+  var item = RECS[catIdx].items[itemIdx];
+  var plans = getPlans(guest, slot);
+  var idx = -1;
+  for (var i = 0; i < plans.length; i++) { if (plans[i].name === item.name) { idx = i; break; } }
+  if (idx === -1) {
+    plans.push({name:item.name,loc:item.loc||'',dist:item.dist||'',custom:false});
+    el.classList.add('added');
+  } else {
+    plans.splice(idx,1);
+    el.classList.remove('added');
+  }
+  savePlans(guest, slot, plans);
+  renderPlanSlot(guest, slot);
+}
+function addCustomPlan() {
+  var input = document.getElementById('plan-custom-input');
+  var val = input.value.trim();
+  if (!val) return;
+  var plans = getPlans(currentGuest, currentPlanSlot);
+  plans.push({name:val,custom:true});
+  savePlans(currentGuest, currentPlanSlot, plans);
+  input.value = '';
+  renderRecPicker(currentGuest, currentPlanSlot);
+  renderPlanSlot(currentGuest, currentPlanSlot);
+}
+function removePlan(guest, slot, idx) {
+  var plans = getPlans(guest, slot);
+  plans.splice(idx,1);
+  savePlans(guest, slot, plans);
+  renderPlanSlot(guest, slot);
+}
+function renderPlanSlot(guest, slot) {
+  var el = document.getElementById('planslot-'+slot);
+  if (!el) return;
+  var plans = getPlans(guest, slot);
+  var html = '';
+  for (var i = 0; i < plans.length; i++) {
+    var p = plans[i];
+    var details = p.loc ? '<span style="font-size:10px;color:var(--muted);display:block">'+p.loc+(p.dist?' \u00b7 '+p.dist:'')+'</span>' : '';
+    html += '<div class="plan-item"><div><span class="plan-item-name">'+p.name+'</span>'+details+'</div><button class="plan-item-remove" onclick="removePlan(\''+guest+'\',\''+slot+'\','+i+')">×</button></div>';
+  }
+  el.querySelector('.plan-items').innerHTML = html;
+}
+
+// ── FILTER ───────────────────────────────────────────────────────
+function selectGuest(g, el) {
+  document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  currentGuest = g;
+  if (PLANNERS.indexOf(g) !== -1) {
+    buildCalendar(g);
+    loadAllPlans(g, function(){ buildCalendar(g); });
+  } else {
+    buildCalendar(g);
+  }
+}
+
+// ── CALENDAR ─────────────────────────────────────────────────────
+function buildCalendar(g) {
+  var grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  var isAll = (g === 'all');
+  var activeDays = isAll ? DAYS : DAYS.filter(function(d){ return GUESTS[g].days.indexOf(d.id) !== -1; });
+  var isPlanner = PLANNERS.indexOf(g) !== -1;
+
+  activeDays.forEach(function(day) {
+    var allEv = EVENTS[day.id] || [];
+    var visible = isAll ? allEv : allEv.filter(function(ev){ return ev.guests.indexOf(g) !== -1; });
+
+    var col = document.createElement('div');
+    col.className = 'day-col';
+    col.innerHTML = '<div class="day-head'+(day.grad?' is-grad':'')+'"><div class="day-num">'+day.date+'</div><div class="day-dow">'+day.dow+'</div></div>';
+
+    visible.forEach(function(ev){ col.appendChild(makeCard(ev,day,g,isPlanner)); });
+    grid.appendChild(col);
+  });
+}
+
+function makeCard(ev, day, g, isPlanner) {
+  var el = document.createElement('div');
+  if (ev.type === 'ceremony') {
+    el.className = 'ev ceremony';
+    el.innerHTML = '<div class="ceremony-icon">✦</div><div class="ceremony-title">'+ev.name+'</div>'+(ev.sub?'<div class="ev-time" style="text-align:center;margin-top:6px">'+ev.sub+'</div>':'')+(ev.modal?'<div class="ev-hint">tap for details</div>':'');
+    if (ev.modal) el.onclick = function(){ openModal(ev,day); };
+  } else if (ev.type === 'options') {
+    el.className = 'ev options-card';
+    el.innerHTML = '<div class="opts-label">'+ev.name+'</div>'+ev.opts.map(function(o){ return '<div class="opt-item">'+o+'</div>'; }).join('');
+  } else if (ev.planSlot && isPlanner) {
+    var slot = ev.planSlot;
+    var plans = getPlans(g, slot);
+    var itemsHtml = '';
+    for (var i = 0; i < plans.length; i++) {
+      var p = plans[i];
+      var details = p.loc ? '<span style="font-size:10px;color:var(--muted);display:block">'+p.loc+(p.dist?' \u00b7 '+p.dist:'')+'</span>' : '';
+      itemsHtml += '<div class="plan-item"><div><span class="plan-item-name">'+p.name+'</span>'+details+'</div><button class="plan-item-remove" onclick="removePlan(\''+g+'\',\''+slot+'\','+i+')">×</button></div>';
+    }
+    var dayLabel = day.date+' \u00b7 '+day.dow+' free time';
+    el.className = 'plan-slot';
+    el.id = 'planslot-'+slot;
+    el.innerHTML = '<div class="plan-slot-label">✦ Your free time</div><div class="plan-items">'+itemsHtml+'</div><button class="plan-add-btn" onclick="openPlanPanel(\''+g+'\',\''+slot+'\',\''+dayLabel+'\')">+ Add plans</button>';
+  } else if (ev.type === 'transportation') {
+    el.className = 'ev transportation';
+    el.innerHTML = '<div class="ev-time">'+ev.sub+'</div><div class="ev-name">'+ev.name+'</div>'+(ev.modal?'<div class="ev-hint">tap for details</div>':'');
+    if (ev.modal) el.onclick = function(){ openModal(ev,day); };
+  } else {
+    el.className = 'ev '+ev.type;
+    var isTime = ev.sub && /^\d/.test(ev.sub);
+    el.innerHTML = (isTime?'<div class="ev-time">'+ev.sub+'</div>':'')+
+      '<div class="ev-name">'+ev.name+'</div>'+
+      (ev.sub&&!isTime?'<div class="ev-sub-note">'+ev.sub+'</div>':'')+
+      (ev.res?'<span class="ev-res">'+ev.res+'</span>':'')+
+      (ev.modal?'<div class="ev-hint">tap for details</div>':'');
+    if (ev.modal) el.onclick = function(){ openModal(ev,day); };
+  }
+  return el;
+}
+
+// ── RECS ─────────────────────────────────────────────────────────
+function buildRecs() {
+  document.getElementById('recs-grid').innerHTML = RECS.map(function(c){
+    return '<div class="rec-cat"><div class="rec-cat-title">'+c.cat+'</div>'+
+      c.items.map(function(i){ return '<div class="rec-row"><span class="rec-name">'+i.name+'</span><span class="rec-note">'+(i.loc||'')+'</span></div>'; }).join('')+
+      '</div>';
+  }).join('');
+}
+
+// ── MODAL ────────────────────────────────────────────────────────
+function openModal(ev, day) {
+  var m = ev.modal;
+  var typeMap = {meal:'Food & Drink',act:'Activity',night:'Nightlife',special:'Special',fam:'Family',ceremony:'Ceremony',transport:'Transport'};
+  document.getElementById('m-type').textContent = (typeMap[ev.type]||ev.type).toUpperCase();
+  document.getElementById('m-title').textContent = ev.name;
+  document.getElementById('m-day').textContent = day.date+' \u00b7 '+day.dow;
+  var f = document.getElementById('m-fields');
+  f.innerHTML = '';
+  if (ev.sub)      f.innerHTML += mf('Time', ev.sub);
+  if (m.dresscode) f.innerHTML += mf('Dress Code', m.dresscode, true);
+  if (m.location)  f.innerHTML += mf('Location', m.location);
+  if (m.fromHotel) f.innerHTML += mf('From Hotel', m.fromHotel);
+  if (m.notes)     f.innerHTML += mf('Notes', m.notes);
+  document.getElementById('modal-bg').classList.add('open');
+}
+function mf(label, val, em) {
+  return '<div><div class="mf-label">'+label+'</div><div class="mf-val'+(em?' em':'')+'">'+ val+'</div></div>';
+}
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){closeModal();closePlanPanel();} });
+
+// ── NAV ──────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelector('[data-page="'+id+'"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── WEATHER ──────────────────────────────────────────────────────
+
+var WX_CODES = {
+  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+  45:'🌫️',48:'🌫️',
+  51:'🌦️',53:'🌦️',55:'🌧️',
+  61:'🌧️',63:'🌧️',65:'🌧️',
+  71:'🌨️',73:'🌨️',75:'❄️',
+  80:'🌦️',81:'🌧️',82:'⛈️',
+  95:'⛈️',96:'⛈️',99:'⛈️'
+};
+
+var WX_DESC = {
+  0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
+  45:'Fog',48:'Icy fog',
+  51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+  61:'Light rain',63:'Rain',65:'Heavy rain',
+  71:'Light snow',73:'Snow',75:'Heavy snow',
+  80:'Showers',81:'Rain showers',82:'Heavy showers',
+  95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'
+};
+
+var TRIP_DAYS = ['5/11','5/12','5/13','5/14','5/15','5/16','5/17','5/18'];
+var TRIP_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon'];
+
+function loadWeather() {
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude=40.7580&longitude=-73.9855' +
+    '&current=temperature_2m,weather_code' +
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min' +
+    '&temperature_unit=fahrenheit&timezone=America%2FNew_York' +
+    '&start_date=2026-05-11&end_date=2026-05-18';
+
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      // Current weather pill
+      var cur = d.current;
+      var code = cur.weather_code;
+      document.getElementById('w-icon').textContent = WX_CODES[code] || '\uD83C\uDF21\uFE0F';
+      document.getElementById('w-temp').textContent = Math.round(cur.temperature_2m) + '\u00B0F';
+      document.getElementById('w-desc').textContent = (WX_DESC[code] || 'NYC') + ' \u00B7 New York City';
+
+      // Week strip on Important Info page
+      var strip = document.getElementById('weather-strip-remind');
+      if (!strip) return;
+      strip.innerHTML = '';
+      var dates = d.daily.time;
+      for (var i = 0; i < dates.length && i < 8; i++) {
+        var wcode = d.daily.weather_code[i];
+        var hi = Math.round(d.daily.temperature_2m_max[i]);
+        var lo = Math.round(d.daily.temperature_2m_min[i]);
+        var card = document.createElement('div');
+        card.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:72px;text-align:center;flex-shrink:0';
+        card.innerHTML =
+          '<div style="font-family:\'DM Mono\',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">'+TRIP_LABELS[i]+'<br>'+TRIP_DAYS[i]+'</div>'+
+          '<div style="font-size:24px;margin:4px 0">'+(WX_CODES[wcode]||'\uD83C\uDF21\uFE0F')+'</div>'+
+          '<div style="font-size:12px;font-weight:500;color:var(--wine)">'+hi+'\u00B0</div>'+
+          '<div style="font-size:11px;color:var(--muted)">'+lo+'\u00B0</div>';
+        strip.appendChild(card);
+      }
+    })
+    .catch(function(){
+      document.getElementById('w-desc').textContent = 'Weather unavailable';
+    });
+}
+
+loadWeather();
+
+// ── INIT ─────────────────────────────────────────────────────────
+buildCalendar('all');
+buildRecs();
+</script>
+</body>
+</html>
